@@ -1,21 +1,37 @@
 package ch.hearc.ig.orderresto.business;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.*;
 
+//@Entity
+//@Table(name="COMMANDE")
 public class Order {
 
+    //@Id
+    //@GeneratedValue(strategy=GenerationType.IDENTITY)
+    //Voir s'il faut également ajouter la SequenceGenerator (page 20 chap. 6)
+    //@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_COMMANDE")
+    //@Column(name="NUMERO")
     private Long id;
+    //@Column(name="FK_CLIENT")
     private Customer customer;
+    //@Column(name="FK_RESTO")
     private Restaurant restaurant;
     private Set<Product> products;
+    //@Column(name="A_EMPORTER", columnDefinition = "CHAR(1)")
     private Boolean takeAway;
-    private LocalDateTime when;
+    //@Column(name="QUAND")
+    //@Temporal(TemporalType.TIMESTAMP)
+    private Date when;
     private BigDecimal totalAmount;
 
-    public Order(Long id, Customer customer, Restaurant restaurant, Boolean takeAway, LocalDateTime when) {
+    public Order() {
+    }
+
+    public Order(Long id, Customer customer, Restaurant restaurant, Boolean takeAway, Date when) {
         this.id = id;
         this.customer = customer;
         this.restaurant = restaurant;
@@ -45,7 +61,7 @@ public class Order {
         return takeAway;
     }
 
-    public LocalDateTime getWhen() {
+    public Date getWhen() {
         return when;
     }
 
@@ -55,6 +71,6 @@ public class Order {
 
     public void addProduct(Product product) {
         this.products.add(product);
-        this.totalAmount.add(product.getUnitPrice());
+        this.totalAmount = this.totalAmount.add(product.getUnitPrice());
     }
 }

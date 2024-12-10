@@ -1,12 +1,22 @@
 package ch.hearc.ig.orderresto.business;
 
+import javax.persistence.*;
+
+//@Entity
+//@Table(name = "CLIENT")
+//@SecondaryTable(name = "RESTAURANT")
 public class Address {
 
+    //@Column(columnDefinition = "CHAR(2)")
     private String countryCode;
+    //@Column(columnDefinition = "CHAR(4)")
     private String postalCode;
     private String locality;
     private String street;
     private String streetNumber;
+
+    public Address() {
+    }
 
     public Address(String countryCode, String postalCode, String locality, String street, String streetNumber) {
         this.countryCode = countryCode;

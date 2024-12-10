@@ -6,7 +6,7 @@ import ch.hearc.ig.orderresto.business.Product;
 import ch.hearc.ig.orderresto.business.Restaurant;
 import ch.hearc.ig.orderresto.persistence.FakeDb;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.time.format.DateTimeFormatter;
 
 public class OrderCLI extends AbstractCLI {
@@ -40,7 +40,7 @@ public class OrderCLI extends AbstractCLI {
         // Possible improvements:
         // - ask whether it's a takeAway order or not?
         // - Ask user for multiple products?
-        Order order = new Order(null, customer, restaurant, false, LocalDateTime.now());
+        Order order = new Order(null, customer, restaurant, false, Date.from(java.time.Instant.now()));
         order.addProduct(product);
 
         // Actually place the order (this could/should be in a different method?)
@@ -55,6 +55,10 @@ public class OrderCLI extends AbstractCLI {
 
     public Order selectOrder() {
         Customer customer = (new CustomerCLI()).getExistingCustomer();
+	if (customer == null) {
+            this.ln(String.format("Désolé, nous ne connaissons pas cette personne."));
+            return null;
+        }
         Object[] orders = customer.getOrders().toArray();
         if (orders.length == 0) {
             this.ln(String.format("Désolé, il n'y a aucune commande pour %s", customer.getEmail()));
@@ -63,18 +67,18 @@ public class OrderCLI extends AbstractCLI {
         this.ln("Choisissez une commande:");
         for (int i = 0 ; i < orders.length ; i++) {
             Order order = (Order) orders[i];
-            LocalDateTime when = order.getWhen();
+            Date when = order.getWhen();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy à hh:mm");
-            this.ln(String.format("%d. %.2f, le %s chez %s.", i, order.getTotalAmount(), when.format(formatter), order.getRestaurant().getName()));
+            this.ln(String.format("%d. %.2f, le %s chez %s.", i, order.getTotalAmount(), when, order.getRestaurant().getName()));
         }
         int index = this.readIntFromUser(orders.length - 1);
         return (Order) orders[index];
     }
 
     public void displayOrder(Order order) {
-        LocalDateTime when = order.getWhen();
+        Date when = order.getWhen();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy à hh:mm");
-        this.ln(String.format("Commande %.2f, le %s chez %s.:", order.getTotalAmount(), when.format(formatter), order.getRestaurant().getName()));
+        this.ln(String.format("Commande %.2f, le %s chez %s.:", order.getTotalAmount(), when, order.getRestaurant().getName()));
         int index = 1;
         for (Product product: order.getProducts()) {
             this.ln(String.format("%d. %s", index, product));

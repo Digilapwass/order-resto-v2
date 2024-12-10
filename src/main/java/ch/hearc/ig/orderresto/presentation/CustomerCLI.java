@@ -11,6 +11,7 @@ public class CustomerCLI extends AbstractCLI {
     public Customer getExistingCustomer() {
         this.ln("Quelle est votre addresse email?");
         String email = this.readEmailFromUser();
+
         return FakeDb.getCustomers().stream()
                 .filter(c -> c.getEmail().equals(email))
                 .findFirst()
